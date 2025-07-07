@@ -7,7 +7,7 @@ import psycopg2
 load_dotenv()
 
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
-loader = PyMuPDFLoader("Taller2SolucionMonitores.pdf")
+loader = PyMuPDFLoader("LibroIMEC1410_CAP123.pdf")
 
 documents = loader.load()
 
@@ -41,6 +41,7 @@ for docFrom, text, embedding in zip(docFrom, texts, embeddings):
         "INSERT INTO documents (origin, content, embedding) VALUES (%s, %s, %s)",
         (docFrom, text, embedding)
     )
+
 
 conn.commit()
 cur.close()
