@@ -20,7 +20,8 @@ cur.execute("""
     CREATE TABLE documents (
         id SERIAL PRIMARY KEY,
         content TEXT,
-        embedding VECTOR(1536)
+        embedding VECTOR(1536),
+        origin TEXT
     );
 """)
 
