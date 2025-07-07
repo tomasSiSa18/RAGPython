@@ -11,12 +11,6 @@ loader = PyMuPDFLoader("Taller2SolucionMonitores.pdf")
 
 documents = loader.load()
 
-"""
-# Let's inspect what we got
-print(f"Loaded {len(documents)} pages")
-print(documents[0].page_content[:500]) 
-"""
-
 # Configure the splitter
 text_splitter = RecursiveCharacterTextSplitter(
     chunk_size=1000,    # You can tweak this
@@ -26,8 +20,10 @@ text_splitter = RecursiveCharacterTextSplitter(
 # Split the loaded documents into chunks
 chunks = text_splitter.split_documents(documents)
 
+docFrom = [chunk.metadata["source"] for chunk in chunks]
 texts = [chunk.page_content for chunk in chunks]
 embeddings = embedding_model.embed_documents(texts)
+
 
 # Connection config — change to match your Docker config
 conn = psycopg2.connect(
@@ -40,13 +36,14 @@ conn = psycopg2.connect(
 
 cur = conn.cursor()
 
-for text, embedding in zip(texts, embeddings):
+for docFrom, text, embedding in zip(docFrom, texts, embeddings):
     cur.execute(
-        "INSERT INTO documents (content, embedding) VALUES (%s, %s)",
-        (text, embedding)
+        "INSERT INTO documents (origin, content, embedding) VALUES (%s, %s, %s)",
+        (docFrom, text, embedding)
     )
 
 conn.commit()
 cur.close()
 conn.close()
+
 
