@@ -16,9 +16,10 @@ cur.execute("CREATE EXTENSION IF NOT EXISTS vector;")
 
 # Create a table with a vector column
 cur.execute("""
-    DROP TABLE IF EXISTS documents;
-    CREATE TABLE documents (
+    DROP TABLE IF EXISTS Biomateriales;
+    CREATE TABLE Biomateriales (
         id SERIAL PRIMARY KEY,
+        origin TEXT, 
         content TEXT,
         embedding VECTOR(1536)
     );

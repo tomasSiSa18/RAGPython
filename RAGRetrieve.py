@@ -17,20 +17,30 @@ conn = psycopg2.connect(
     password="password"
 )
 
-query_embedding = embedding_model.embed_query("Fundamental concepts of atomic structure")
-cur = conn.cursor()
+print("Bienvenido al retrieval del RAG")
 
-cur.execute(
-    """
-    SELECT content, embedding <-> %s::vector AS distance
-    FROM documents
-    ORDER BY distance
-    LIMIT 5;
-    """,
-    (query_embedding,)
-)
+prompt = input("Ingrese un prompt:")
 
-results = cur.fetchall()
-for row in results:
-    content, distance = row
-    print(f"[{distance:.4f}] {content[:200]}...\n")
+while prompt != "0":
+
+    query_embedding = embedding_model.embed_query(prompt)
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        SELECT content, embedding <-> %s::vector AS distance
+        FROM documents
+        ORDER BY distance
+        LIMIT 5;
+        """,
+        (query_embedding,)
+    )
+
+    results = cur.fetchall()
+    for row in results:
+        content, distance = row
+        print(f"[{distance:.4f}] {content[:200]}...\n")
+
+
+cur.close()
+conn.close()
