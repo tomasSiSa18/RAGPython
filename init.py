@@ -21,7 +21,8 @@ cur.execute("""
         id SERIAL PRIMARY KEY,
         origin TEXT, 
         content TEXT,
-        embedding VECTOR(1536)
+        embedding VECTOR(1536),
+        origin TEXT
     );
 """)
 
